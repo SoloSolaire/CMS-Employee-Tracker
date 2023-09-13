@@ -74,7 +74,15 @@ function viewAD() {
     })
 };
 
-function viewAR() {};
+function viewAR() {
+    db.query(`SELECT * FROM role`, (err, results) => {
+        if (err) {
+            console.log(err);
+        }
+        console.table(results);
+        init();
+    })
+};
 
 function viewAE() {};
 
@@ -98,7 +106,36 @@ function addAD() {
         })
 };
 
-function addAR() {};
+function addAR() {
+    inquirer
+        .prompt([
+            {
+                type: "input",
+                message: "Title of the role?",
+                name: "title"
+            },
+            {
+                type: "input",
+                message: "Salary of the role?",
+                name: "salary"
+            },
+            {
+                type: "input",
+                message: "ID of the department that the role is associated to?",
+                name: "department"
+            }
+        ])
+        .then((ans) => {
+            let addedRole = [ans.title, ans.salary, ans.department]
+            db.query(`INSERT INTO role(title, salary, department_id) VALUES (?, ?, ?)`, addedRole, (err, result) => {
+                if (err) {
+                    console.log(err);
+                }
+                console.log("Role added!");
+                init();
+            })
+        })
+};
 
 function addAE() {};
 
