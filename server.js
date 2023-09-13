@@ -84,7 +84,15 @@ function viewAR() {
     })
 };
 
-function viewAE() {};
+function viewAE() {
+    db.query(`SELECT * FROM employee`, (err, results) => {
+        if (err) {
+            console.log(err);
+        }
+        console.table(results);
+        init();
+    })
+};
 
 function addAD() {
     inquirer
@@ -126,7 +134,8 @@ function addAR() {
             }
         ])
         .then((ans) => {
-            let addedRole = [ans.title, ans.salary, ans.department]
+            let addedRole = [ans.title, ans.salary, ans.department];
+
             db.query(`INSERT INTO role(title, salary, department_id) VALUES (?, ?, ?)`, addedRole, (err, result) => {
                 if (err) {
                     console.log(err);
@@ -137,7 +146,42 @@ function addAR() {
         })
 };
 
-function addAE() {};
+function addAE() {
+    inquirer
+    .prompt([
+        {
+            type: "input",
+            message: "First name of the employee?",
+            name: "first"
+        },
+        {
+            type: "input",
+            message: "Last name of the employee?",
+            name: "last"
+        },
+        {
+            type: "input",
+            message: "ID of the employee's role?",
+            name: "roleID"
+        },
+        {
+            type: "input",
+            message: "ID pf the employee's manager?",
+            name: "managerID"
+        }
+    ])
+    .then((ans) => {
+        let addedEmployee = [ans.first, ans.last, ans.roleID, ans.managerID];
+
+        db.query(`INSERT INTO employee(first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)`, addedEmployee, (err, result) => {
+            if (err) {
+                console.log(err);
+            }
+            console.log(result);
+            init();
+        })
+    })
+};
 
 function updateAE() {};
 
