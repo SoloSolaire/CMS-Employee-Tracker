@@ -64,13 +64,39 @@ function init() {
         })
 };
 
-function viewAD() {};
+function viewAD() {
+    db.query(`SELECT * FROM department`, (err, results) => {
+        if (err) {
+            console.log(err);
+        }
+        console.table(results);
+        init();
+    })
+};
 
 function viewAR() {};
 
 function viewAE() {};
 
-function addAD() {};
+function addAD() {
+    inquirer
+        .prompt([
+            {
+                type: "input",
+                message: "Enter the name of the Department.",
+                name: "depName"
+            }
+        ])
+        .then((ans) => {
+            db.query(`INSERT INTO department(name) VALUES (?)`, ans.depName, (err, results) => {
+                if (err) {
+                    console.log(err);
+                }
+                console.log('Department added!');
+                init();
+            })
+        })
+};
 
 function addAR() {};
 
