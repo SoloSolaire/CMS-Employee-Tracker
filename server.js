@@ -177,11 +177,64 @@ function addAE() {
             if (err) {
                 console.log(err);
             }
-            console.log(result);
+            console.log("Employee added!");
             init();
         })
     })
 };
 
-function updateAE() {};
+function updateAE() {
+    db.query(`SELECT id, first_name, last_name FROM employee`, (err, results) => {
+        if (err) {
+            console.log(err);
+        }
+
+        inquirer
+        .prompt([
+            {
+                type: "list",
+                message: "Update which employee?",
+                name: "employee",
+                choices: results.map((nombre) => ({
+                    name: `${nombre.last_name}, ${nombre.first_name}`,
+                    value: nombre.id,
+                })),
+                
+            }
+        ])
+        .then((ans) => {
+            const employeeID = ans.employee;
+
+            db.query(`SELECT id, title FROM role`, (err, results) => {
+                if (err) {
+                    console.log(err);
+                }
+
+                inquirer
+                    .prompt([
+                        {
+                            type: "list",
+                            message: "Choose a new role for the selected employee",
+                            name: "newRole",
+                            choices: results.map((role) => ({
+                                name: role.title,
+                                value: role.id
+                            }))
+                        }
+                    ])
+                    .then((ans) => {
+                        const newID = ans.newRole;
+
+                        db.query(`UPDATE employee SET role_id = ? WHERE id = ?`, [newID, employeeID], (err, results) => {
+                            if (err) {
+                                console.log(err);
+                            }
+                            console.log("Employee updated!");
+                            init();
+                        })
+                    })
+            })
+        })
+    });
+};
 
